@@ -62,7 +62,7 @@ const SingleProduct = props => {
 
             <WhatsappShareButton
               className="share-btn"
-              url="http://localhost:8100/product/5dcafc367c8c423494f9e496"
+              url={`https://ionic-app-floor.herokuapp.com/product/${product._id}`}
             >
               <IonIcon name="md-share-alt"></IonIcon>
 
