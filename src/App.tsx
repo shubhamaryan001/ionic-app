@@ -13,6 +13,8 @@ import { IonReactRouter } from "@ionic/react-router";
 import { apps, send, home, contact, pricetags } from "ionicons/icons";
 import Home from "./pages/Home";
 import SingleProduct from "./pages/SingleProduct";
+
+import Cart from "./pages/CartPage";
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
 /* Basic CSS for apps built with Ionic */
@@ -27,6 +29,7 @@ import "@ionic/react/css/text-alignment.css";
 import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
+import { FaCartPlus } from "react-icons/fa";
 
 /* Theme variables */
 import "./theme/variables.css";
@@ -37,6 +40,9 @@ const App: React.FC = () => (
       <IonTabs>
         <IonRouterOutlet>
           <Route path="/home" component={Home} exact={true} />
+
+          <Route path="/cart" component={Cart} exact={true} />
+
           <Route
             path="/product/:productId"
             exact={true}
@@ -45,20 +51,28 @@ const App: React.FC = () => (
 
           <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
         </IonRouterOutlet>
+
         <IonTabBar slot="bottom">
           <IonTabButton tab="tab1" href="/home">
             <IonIcon icon={home} />
             <IonLabel>Home</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="tab3">
+          <IonTabButton tab="tab2">
             <IonIcon icon={pricetags} />
             <IonLabel>Shop</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="tab2">
+          <IonTabButton tab="tab3">
             <IonIcon icon={contact} />
-            <IonLabel>Login</IonLabel>
+            <IonLabel>Login/Signup</IonLabel>
+          </IonTabButton>
+
+          <IonTabButton tab="tab4" href="/cart">
+            <FaCartPlus
+              style={{ marginBottom: "2px", fontSize: "20px", color: "yellow" }}
+            />
+            <IonLabel>Cart</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
