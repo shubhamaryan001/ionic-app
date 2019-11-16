@@ -66,9 +66,9 @@ const Signin = () => {
   const redirectUser = () => {
     if (redirectToReferrer) {
       if (user && user.role === 1) {
-        return <Redirect to="/shop" />;
+        return <Redirect to="/profile" />;
       } else {
-        return <Redirect to="/home" />;
+        return <Redirect to="/profile" />;
       }
     }
     if (isAuthenticated()) {

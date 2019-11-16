@@ -23,6 +23,8 @@ import "./Home.css";
 import { API } from "../../config";
 import { itemTotal } from "./CartHelper";
 import { FaCartPlus } from "react-icons/fa";
+import Slide from "react-reveal/Slide";
+import Zoom from "react-reveal/Zoom";
 
 const Home = () => {
   const [productsByArrival, setProductsByArrival] = useState([]);
@@ -43,6 +45,13 @@ const Home = () => {
       return currentValue + nextValue.price;
     }, 0);
   };
+  const slideOpts = {
+    initialSlide: 0,
+    speed: 800,
+    autoplay: {
+      delay: 2000
+    }
+  };
 
   useEffect(() => {
     loadProductsByArrival();
@@ -55,11 +64,9 @@ const Home = () => {
           <IonGrid>
             <IonRow>
               <IonCol>
-                {" "}
                 <IonTitle>Home</IonTitle>
               </IonCol>
               <IonCol>
-                {" "}
                 <IonTitle style={{ float: "right" }}>
                   <a href="/cart">
                     <FaCartPlus
@@ -79,7 +86,7 @@ const Home = () => {
       </IonHeader>
 
       {productsByArrival.length > 0 && (
-        <IonSlides id="slides">
+        <IonSlides pager={true} options={slideOpts}>
           {productsByArrival.map((p, i) => (
             // <img src={`${API}/product/photo/${p._id}`} alt={p.name} />
             <IonSlide key={i}>
@@ -137,20 +144,36 @@ const Home = () => {
           ))}
         </IonSlides>
       )}
+      <Zoom duration={1000} delay={2500}>
+        <IonCard
+          color="dark"
+          style={{
+            textAlign: "center"
+          }}
+        >
+          <iframe
+            title="Intro"
+            allowFullScreen="allowFullScreen"
+            src="https://www.youtube.com/embed/EU0d67eNPTU?ecver=1&amp;iv_load_policy=1&amp;rel=0&amp;showinfo=0&amp;yt:stretch=16:9&amp;autohide=1&amp;color=red&amp;width=385&amp;width=385"
+            width="385"
+            height="250"
+            allowtransparency="true"
+            frameborder="0"
+          ></iframe>
+          <IonTitle color="light" style={{}}>
+            WATCH OUR INTRODUCTION VIDEO
+          </IonTitle>
+        </IonCard>
+      </Zoom>
 
-      <IonCard
-        style={{ textAlign: "center", padding: "0", margin: "5px 0 5px 0" }}
-      >
-        <iframe
-          width="385"
-          height="250"
-          title="Intro"
-          src="https://www.youtube.com/embed/EU0d67eNPTU"
-          frameborder="0"
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe>
-      </IonCard>
+      <Slide left duration={1000} delay={3500}>
+        <IonCard style={{}}>
+          <img
+            src="https://www.shubhamaryan.com/wp-content/uploads/2019/11/Screenshot_14.jpg"
+            alt="paymentoption"
+          />
+        </IonCard>
+      </Slide>
     </IonContent>
   );
 };

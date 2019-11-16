@@ -109,7 +109,7 @@ const UserProfile = ({ history }) => {
           <IonButton
             onClick={() =>
               signout(() => {
-                history.push("/");
+                history.push("/home");
               })
             }
             color="danger"
