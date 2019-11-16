@@ -29,7 +29,7 @@ import ReactHtmlParser, {
   htmlparser2
 } from "react-html-parser";
 import "./Home.css";
-import { API } from "../config";
+import { API } from "../../config";
 import { addItem } from "./CartHelper";
 import { FaShare, FaCartPlus } from "react-icons/fa";
 
@@ -37,6 +37,8 @@ import { WhatsappShareButton, WhatsappIcon } from "react-share";
 
 const SingleProduct = props => {
   let [product, setProduct] = useState({});
+  const [name, setName] = useState();
+
   const [error, setError] = useState(false);
   const [price, setPrice] = useState();
   const [redirect, setRedirect] = useState(false);
@@ -48,6 +50,7 @@ const SingleProduct = props => {
       } else {
         setProduct(data);
         setPrice(data.price);
+        setName(data.name);
       }
     });
   };
@@ -57,6 +60,7 @@ const SingleProduct = props => {
       setRedirect(true);
     });
   };
+
   const shouldRedirect = redirect => {
     if (redirect) {
       return <Redirect to="/cart" />;
@@ -65,16 +69,15 @@ const SingleProduct = props => {
 
   const RenderVariant = e => {
     e.preventDefault();
-    let price = e.target.id;
-    let area = e.target.name;
-
-    setPrice(e.target.id);
+    let price = e.target.dataset.price;
+    let area = e.target.dataset.area;
+    setPrice(e.target.dataset.price);
     let newProduct = product;
-
-    if (product.name.includes("variant"))
-      product.name = product.name.split("variant")[0];
-
+    if (product.name.includes("variant")) {
+      product.name = product.name.split("variant")[0].trim();
+    }
     product.name = `${product.name} variant - ${area} sq. ft.`;
+    setName(product.name);
     newProduct.variantSelected = area + "sq. ft.";
     newProduct.price = parseInt(price);
     setProduct(newProduct);
@@ -88,7 +91,6 @@ const SingleProduct = props => {
   const showAddToCartButton = () => {
     return (
       <IonButton onClick={addToCart} color="success" shape="round">
-        {" "}
         <FaCartPlus
           style={{
             marginRight: "5px"
@@ -113,7 +115,8 @@ const SingleProduct = props => {
             <IonRow>
               <IonCol style={{ margin: "0", padding: "0" }}>
                 <IonCardTitle style={{ padding: "1rem 0rem 1rem 1rem" }}>
-                  {product.name}
+                  {name}
+                  {console.log(product)}
                 </IonCardTitle>
               </IonCol>
 
@@ -154,7 +157,7 @@ const SingleProduct = props => {
                 }}
               >
                 <div>
-                  <h5>₹{product.price}</h5>
+                  <h5>₹{price}</h5>
                 </div>
               </IonCol>
             </IonRow>
@@ -178,8 +181,9 @@ const SingleProduct = props => {
               product.variants.map((item, index) => (
                 <IonButton
                   key={index}
-                  id={item.price}
-                  name={item.area}
+                  // id={item.price}
+                  data-area={item.area}
+                  data-price={item.price}
                   style={{ textTransform: "uppercase" }}
                   onClick={RenderVariant}
                   size="small"

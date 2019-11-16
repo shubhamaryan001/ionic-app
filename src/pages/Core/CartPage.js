@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getCart, removeItem } from "./CartHelper";
 import Checkout from "./CheckOut";
-import { API } from "../config";
+import { API } from "../../config";
 import "./Home.css";
 import {
   IonCard,

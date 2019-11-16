@@ -9,12 +9,25 @@ import {
   IonTabButton,
   IonTabs
 } from "@ionic/react";
+
+import PrivateRoute from "./pages/Auth/PrivateRoute";
+
 import { IonReactRouter } from "@ionic/react-router";
 import { apps, send, home, contact, pricetags } from "ionicons/icons";
-import Home from "./pages/Home";
-import SingleProduct from "./pages/SingleProduct";
+import Home from "./pages/Core/Home";
+import SingleProduct from "./pages/Core/SingleProduct";
 
-import Cart from "./pages/CartPage";
+import Cart from "./pages/Core/CartPage";
+
+import Shop from "./pages/Core/Shop";
+
+//UserS page//
+
+import Signin from "./pages/User/Signin";
+import UserProfile from "./pages/User/UserProfile";
+
+import { isAuthenticated } from "./pages/User/UsersApi";
+
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
 /* Basic CSS for apps built with Ionic */
@@ -34,50 +47,70 @@ import { FaCartPlus } from "react-icons/fa";
 /* Theme variables */
 import "./theme/variables.css";
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route path="/home" component={Home} exact={true} />
+const App: React.FC = () => {
+  const Reload = () => {
+    window.location.reload();
+  };
 
-          <Route path="/cart" component={Cart} exact={true} />
+  const { user } = isAuthenticated();
 
-          <Route
-            path="/product/:productId"
-            exact={true}
-            component={SingleProduct}
-          />
-
-          <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
-        </IonRouterOutlet>
-
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/home">
-            <IonIcon icon={home} />
-            <IonLabel>Home</IonLabel>
-          </IonTabButton>
-
-          <IonTabButton tab="tab2">
-            <IonIcon icon={pricetags} />
-            <IonLabel>Shop</IonLabel>
-          </IonTabButton>
-
-          <IonTabButton tab="tab3">
-            <IonIcon icon={contact} />
-            <IonLabel>Login/Signup</IonLabel>
-          </IonTabButton>
-
-          <IonTabButton tab="tab4" href="/cart">
-            <FaCartPlus
-              style={{ marginBottom: "2px", fontSize: "20px", color: "yellow" }}
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <IonTabs>
+          <IonRouterOutlet>
+            <Route path="/home" component={Home} exact={true} />
+            <Route path="/signin" component={Signin} exact={true} />
+            <Route path="/shop" component={Shop} exact={true} />
+            <PrivateRoute
+              path="/profile"
+              component={UserProfile}
+              exact={true}
             />
-            <IonLabel>Cart</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
+
+            <Route
+              path="/product/:productId"
+              exact={true}
+              component={SingleProduct}
+            />
+
+            <Route path="/cart" component={Cart} exact={true} />
+
+            <Route
+              path="/"
+              render={() => <Redirect to="/home" />}
+              exact={true}
+            />
+          </IonRouterOutlet>
+
+          <IonTabBar slot="bottom">
+            <IonTabButton tab="home" href="/home">
+              <IonIcon icon={home} />
+              <IonLabel>Home</IonLabel>
+            </IonTabButton>
+
+            <IonTabButton tab="shop" href="/shop" onClick={Reload}>
+              <IonIcon icon={pricetags} />
+              <IonLabel>Shop</IonLabel>
+            </IonTabButton>
+            {!isAuthenticated() && (
+              <IonTabButton tab="signin" href="/signin" onClick={Reload}>
+                <IonIcon icon={contact} />
+                <IonLabel>Login/Signup</IonLabel>
+              </IonTabButton>
+            )}
+
+            {isAuthenticated() && (
+              <IonTabButton tab="profile" href="/profile" onClick={Reload}>
+                <IonIcon icon={contact} />
+                <IonLabel>Account info</IonLabel>
+              </IonTabButton>
+            )}
+          </IonTabBar>
+        </IonTabs>
+      </IonReactRouter>
+    </IonApp>
+  );
+};
 
 export default App;
