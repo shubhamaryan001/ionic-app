@@ -85,6 +85,25 @@ const Home = () => {
         </IonToolbar>
       </IonHeader>
 
+      <IonCard
+        style={{
+          textAlign: "center",
+          borderRadius: "0",
+          margin: "0"
+        }}
+      >
+        <img
+          style={{
+            textAlign: "center",
+            width: "60%",
+            height: "auto",
+            margin: "0 auto"
+          }}
+          src="https://www.shubhamaryan.com/wp-content/uploads/2019/11/1.png"
+          alt="Floor Plan Bazaar"
+        />
+      </IonCard>
+
       {productsByArrival.length > 0 && (
         <IonSlides pager={true} options={slideOpts}>
           {productsByArrival.map((p, i) => (
@@ -148,13 +167,16 @@ const Home = () => {
         <IonCard
           color="dark"
           style={{
-            textAlign: "center"
+            textAlign: "center",
+            margin: "0",
+            borderRadius: "0",
+            padding: "5px 0 0 0"
           }}
         >
           <iframe
             title="Intro"
             allowFullScreen="allowFullScreen"
-            src="https://www.youtube.com/embed/EU0d67eNPTU?ecver=1&amp;iv_load_policy=1&amp;rel=0&amp;showinfo=0&amp;yt:stretch=16:9&amp;autohide=1&amp;color=red&amp;width=385&amp;width=385"
+            src="https://www.youtube.com/embed/EU0d67eNPTU?ecver=1&amp;iv_load_policy=1&amp;rel=0&amp;showinfo=0&amp;yt:stretch=16:9&amp;autoplay=1&amp;autohide=1&amp;color=red&amp;width=385&amp;width=385"
             width="385"
             height="250"
             allowtransparency="true"
