@@ -34,6 +34,12 @@ const UserProfile = ({ history }) => {
     token
   } = isAuthenticated();
 
+  const photoUrl = _id
+    ? `${
+        process.env.REACT_APP_API_URL
+      }/user/photo/${_id}?${new Date().getTime()}`
+    : "https://www.shubhamaryan.com/wp-content/uploads/2019/11/dummy-user-img-1.png";
+
   return (
     <IonContent>
       <IonHeader>
@@ -48,11 +54,7 @@ const UserProfile = ({ history }) => {
         </IonCardTitle>
         <IonCardContent>
           <IonItem lines="none" style={{ textAlign: "center" }}>
-            <img
-              src={`${API}/user/photo/${_id}`}
-              alt={name}
-              style={{ borderRadius: "50px" }}
-            />
+            <img src={photoUrl} alt={name} style={{ borderRadius: "50px" }} />
           </IonItem>
           <IonItem lines="none">
             <IonLabel>

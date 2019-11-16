@@ -90,7 +90,7 @@ const SingleProduct = props => {
 
   const showAddToCartButton = () => {
     return (
-      <IonButton onClick={addToCart} color="success" shape="round">
+      <IonButton onClick={addToCart} href="/cart" color="success" shape="round">
         <FaCartPlus
           style={{
             marginRight: "5px"
