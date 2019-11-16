@@ -19,7 +19,7 @@ import {
 } from "@ionic/react";
 import { API } from "../../config";
 import { isAuthenticated, signout } from "./UsersApi";
-
+import DefaultImg from "../../image/dummy-user-img-1.png";
 const isActive = (history, path) => {
   if (history.location.pathname === path) {
     return { color: "#ff9900" };
@@ -38,7 +38,7 @@ const UserProfile = ({ history }) => {
     ? `${
         process.env.REACT_APP_API_URL
       }/user/photo/${_id}?${new Date().getTime()}`
-    : "https://www.shubhamaryan.com/wp-content/uploads/2019/11/dummy-user-img-1.png";
+    : DefaultImg;
 
   return (
     <IonContent>
@@ -54,7 +54,12 @@ const UserProfile = ({ history }) => {
         </IonCardTitle>
         <IonCardContent>
           <IonItem lines="none" style={{ textAlign: "center" }}>
-            <img src={photoUrl} alt={name} style={{ borderRadius: "50px" }} />
+            <img
+              src={photoUrl}
+              onError={i => (i.target.src = `${DefaultImg}`)}
+              alt={name}
+              style={{ borderRadius: "50px" }}
+            />
           </IonItem>
           <IonItem lines="none">
             <IonLabel>
