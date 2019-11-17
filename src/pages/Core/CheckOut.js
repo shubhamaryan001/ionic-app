@@ -107,7 +107,7 @@ const CheckOut = ({ products }) => {
     const deductUserBalance = await deductUserWallet({
       token,
       userId: user._id,
-      wallet: { amount: amount }
+      wallet: { amount: FirstAmount }
     });
     // if dedcuted get the current balance
     if (deductUserBalance.success) {
@@ -123,7 +123,10 @@ const CheckOut = ({ products }) => {
           transaction_id: "Undifine",
           amount: amount,
           payment_mode: "Wallet Payment",
-          note: anyNote
+          note: anyNote,
+          firstpayment: true,
+          firstpaymentamount: FirstAmount,
+          secondpaymentamount: SecondAmount
         };
 
         await createOrder(userId, token, createOrderData)
