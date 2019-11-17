@@ -70,9 +70,7 @@ const UserProfile = ({ history }) => {
     getBalance();
   }, []);
 
-  const photoUrl = _id
-    ? `${process.env.REACT_APP_API_URL}/user/photo/${_id}`
-    : DefaultImg;
+  const photoUrl = _id ? `${API}/user/photo/${_id}` : DefaultImg;
 
   const showOrdersLength = () => {
     if (order.length > 0) {
