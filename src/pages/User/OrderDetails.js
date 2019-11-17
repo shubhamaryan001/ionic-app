@@ -6,11 +6,12 @@ import moment from "moment";
 import {
   isAuthenticated,
   getSingleOrder,
-  updateOrderCancelled
+  updateOrderCancelled,
+  updateSecondPayment
 } from "./UsersApi";
 import { FaRegCheckCircle, FaClock } from "react-icons/fa";
 import { Modal, Icon, Button } from "antd";
-
+import { razorPayOptionsSecond } from "./SecondPayment";
 import "./User.css";
 import {
   IonContent,
@@ -26,8 +27,10 @@ import {
   IonAlert,
   IonCardContent
 } from "@ionic/react";
+let { user } = isAuthenticated();
 
 const { confirm } = Modal;
+const Razorpay = window.Razorpay;
 
 const OrderDetails = props => {
   const [showAlert1, setShowAlert1] = useState(false);
@@ -41,6 +44,9 @@ const OrderDetails = props => {
 
   const { redirectToReferrer } = values;
   const cancel = true;
+  const secondpayment = true;
+  const userId = isAuthenticated() && isAuthenticated().user._id;
+
   const loadSingleOrder = orderId => {
     getSingleOrder(orderId, user._id, token).then(data => {
       if (data.error) {
@@ -66,6 +72,24 @@ const OrderDetails = props => {
       }
     });
   };
+
+  const handleSecondPayment = orderId => {
+    let { user, token } = isAuthenticated();
+    updateSecondPayment(user._id, token, order._id, secondpayment).then(
+      data => {
+        if (data.error) {
+          console.log("Status update failed");
+        } else {
+          console.log("second payment has been successfull");
+          setValues({
+            redirectToReferrer: false
+          });
+          loadSingleOrder(order._id, user._id, token);
+        }
+      }
+    );
+  };
+
   const contentcancel = () => {
     return (
       <div>
@@ -98,8 +122,24 @@ const OrderDetails = props => {
 
   const redirectUser = () => {
     if (redirectToReferrer) {
-      return <Redirect to="/order/successfull" />;
+      return <Redirect to="/profile" />;
     }
+  };
+
+  const SecondAmount = order.secondpaymentamount;
+
+  const rzp1 = new Razorpay(
+    razorPayOptionsSecond(
+      SecondAmount,
+      user && user.name && user.email
+        ? { ...user, token }
+        : { name: "", email: "" },
+      handleSecondPayment
+    )
+  );
+  const openRzrPay = event => {
+    rzp1.open();
+    event.preventDefault();
   };
 
   return (
@@ -383,7 +423,11 @@ const OrderDetails = props => {
                             <a href="/">Download File</a>
                           </IonButton>
                         </div>
-                        <IonButton size="small">
+                        <IonButton
+                          size="small"
+                          onClick={openRzrPay}
+                          id="rzp-button1"
+                        >
                           To Unlock Pay rest Balance
                         </IonButton>
 

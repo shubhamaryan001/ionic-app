@@ -96,3 +96,19 @@ export const updateOrderCancelled = (userId, token, orderId, cancelled) => {
     })
     .catch(err => console.log(err));
 };
+
+export const updateSecondPayment = (userId, token, orderId, secondpayment) => {
+  return fetch(`${API}/order/${orderId}/secondpayment/${userId}`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ secondpayment, orderId })
+  })
+    .then(response => {
+      return response.json();
+    })
+    .catch(err => console.log(err));
+};
