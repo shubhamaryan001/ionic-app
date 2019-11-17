@@ -12,12 +12,17 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonContent
+  IonContent,
+  IonTitle
 } from "@ionic/react";
+import { GoAlert } from "react-icons/go";
 
+import { isAuthenticated } from "../User/UsersApi";
 const CartPage = () => {
   const [items, setItems] = useState([]);
+
   const [run, setRun] = useState(false);
+  const { user } = isAuthenticated();
 
   useEffect(
     () => {
@@ -34,7 +39,7 @@ const CartPage = () => {
         <h2>Your cart has {`${items.length}`} items</h2>
         <hr />
         {items.map((product, i) => (
-          <IonCard key={i}>
+          <IonCard key={i} style={{ borderRadius: "0", margin: "0" }}>
             <IonGrid>
               <IonRow>
                 <IonCol>
@@ -47,7 +52,6 @@ const CartPage = () => {
                 </IonCol>
                 <IonCol>
                   <IonLabel>
-                    {" "}
                     <b>{product.name}</b>
                   </IonLabel>
                 </IonCol>
@@ -60,7 +64,6 @@ const CartPage = () => {
                       setRun(!run); // run useEffect in parent Cart
                     }}
                   >
-                    {" "}
                     Remove Product
                   </IonButton>
                 </IonCol>
@@ -81,26 +84,42 @@ const CartPage = () => {
   );
 
   return (
-    <IonContent>
-      <div className="row">
-        {items.length > 0 ? (
-          <>
-            <div className="col-6"> {showItems(items)}</div>
-            <div className="col-6">
-              <div
-                className=" card cart-summary pb-3 pt-3 pl-3 pr-3  container-fluid"
-                style={{ width: "20rem" }}
-              >
-                <h2 className="mb-4">Your cart summary</h2>
-                <hr />
-              </div>
-            </div>
-          </>
-        ) : (
-          noItemsMessage()
-        )}
-      </div>
-    </IonContent>
+    <>
+      {isAuthenticated() ? (
+        <IonContent>
+          <div className="row">
+            {items.length > 0 ? (
+              <>
+                <IonCard>{showItems(items)}</IonCard>
+                <div className="col-6">
+                  <IonCard>
+                    <h2 className="mb-4">Your cart summary</h2>
+                    <hr />
+                    <Checkout products={items} setRun={setRun} run={run} />
+                  </IonCard>
+                </div>
+              </>
+            ) : (
+              noItemsMessage()
+            )}
+          </div>
+        </IonContent>
+      ) : (
+        <IonContent>
+          <IonCard className="cart-back">
+            <IonCard className="cart-front">
+              <GoAlert style={{ fontSize: "5rem", color: "#ffce00" }} />
+              <div>For Buying the Product Please First Signin/Signup</div>
+              <a href="/signin">
+                <IonButton>
+                  <h6>To Continue Signin</h6>
+                </IonButton>
+              </a>
+            </IonCard>
+          </IonCard>
+        </IonContent>
+      )}
+    </>
   );
 };
 

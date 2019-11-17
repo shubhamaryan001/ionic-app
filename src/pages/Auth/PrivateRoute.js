@@ -10,6 +10,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
         <Component {...props} />
       ) : (
         <Redirect
+          push
           to={{
             pathname: "/signin",
             state: { from: props.location }

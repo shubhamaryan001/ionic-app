@@ -1,0 +1,18 @@
+@import "../../../node_modules/antd/dist/antd.css";
+
+.vl {
+  margin-left: 1rem;
+  border-left: 3px solid #10dc60;
+  height: 40px;
+}
+
+.vlred {
+  margin-left: 1rem;
+  border-left: 3px dotted #f04141;
+  height: 40px;
+}
+
+.block-blur {
+  background-image: url(https://www.shubhamaryan.com/wp-content/uploads/2019/11/cart-back.jpg);
+  filter: blur(15px);
+}

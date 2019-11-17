@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, Route } from "react-router-dom";
+import { Redirect, Route, withRouter } from "react-router-dom";
 import {
   IonApp,
   IonIcon,
@@ -25,7 +25,7 @@ import Shop from "./pages/Core/Shop";
 
 import Signin from "./pages/User/Signin";
 import UserProfile from "./pages/User/UserProfile";
-
+import OrderDetails from "./pages/User/OrderDetails";
 import { isAuthenticated } from "./pages/User/UsersApi";
 
 /* Core CSS required for Ionic components to work properly */
@@ -65,6 +65,11 @@ const App: React.FC = () => {
             <PrivateRoute
               path="/profile"
               component={UserProfile}
+              exact={true}
+            />
+            <PrivateRoute
+              path="/order/:orderId"
+              component={OrderDetails}
               exact={true}
             />
 

@@ -76,6 +76,7 @@ const Signin = () => {
     }
   };
 
+  useEffect(() => {}, []);
   return (
     <IonContent>
       <IonHeader>

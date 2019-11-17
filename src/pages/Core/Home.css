@@ -71,3 +71,21 @@ li {
 /* .desc-card {
   max-height: 100vh;
 } */
+
+.cart-back {
+  background-image: url(https://www.shubhamaryan.com/wp-content/uploads/2019/11/cart-back.jpg) !important;
+  height: 94vh;
+  margin: 0;
+  padding: 0;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.cart-front {
+  font-weight: 500;
+  margin-top: 35vh;
+  padding: 2rem;
+  text-align: center;
+  --background: white;
+}

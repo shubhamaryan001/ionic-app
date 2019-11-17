@@ -7,19 +7,25 @@ import {
   IonToolbar,
   IonCard,
   IonCardTitle,
-  IonCardContent,
   IonInput,
   IonItem,
   IonButton,
   IonLabel,
-  IonAvatar,
   IonGrid,
   IonRow,
-  IonCol
+  IonCol,
+  IonList,
+  IonCardHeader,
+  IonBadge,
+  IonAvatar
 } from "@ionic/react";
+import { getUserBalance } from "../Core/ApiCore";
+import { isAuthenticated, signout, getOrdersHistory } from "./UsersApi";
+import { GoProject } from "react-icons/go";
 import { API } from "../../config";
-import { isAuthenticated, signout } from "./UsersApi";
+
 import DefaultImg from "../../image/dummy-user-img-1.png";
+
 const isActive = (history, path) => {
   if (history.location.pathname === path) {
     return { color: "#ff9900" };
@@ -29,16 +35,58 @@ const isActive = (history, path) => {
 };
 
 const UserProfile = ({ history }) => {
+  const [order, setOrder] = useState([]);
+
+  const initOrder = (userId, token) => {
+    getOrdersHistory(userId, token).then(data => {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        setOrder(data);
+      }
+    });
+  };
+
   let {
-    user: { _id, name, email, mobile, role, wallet_balance },
+    user: { _id, name, email, mobile, wallet_balance },
     token
   } = isAuthenticated();
+
+  const [balc, setBalc] = useState({
+    currentWalletBalance: wallet_balance
+  });
+
+  const { currentWalletBalance } = balc;
+
+  const getBalance = async event => {
+    const currentBalance = await getUserBalance({ userId: _id });
+    setBalc({
+      ...balc,
+      ["currentWalletBalance"]: currentBalance.user.wallet_balance
+    });
+  };
+  useEffect(() => {
+    initOrder(_id, token);
+    getBalance();
+  }, []);
 
   const photoUrl = _id
     ? `${
         process.env.REACT_APP_API_URL
       }/user/photo/${_id}?${new Date().getTime()}`
     : DefaultImg;
+
+  const showOrdersLength = () => {
+    if (order.length > 0) {
+      return (
+        <h1 className="text-danger mb-5 display-5 text-center">
+          Total orders: {order.length}
+        </h1>
+      );
+    } else {
+      return <h1 className="text-danger text-center">No orders</h1>;
+    }
+  };
 
   return (
     <IonContent>
@@ -47,39 +95,122 @@ const UserProfile = ({ history }) => {
           <IonTitle>Profile</IonTitle>
         </IonToolbar>
       </IonHeader>
+      <IonCard style={{ margin: "0", padding: "0", borderRadius: "0" }}>
+        <IonButton expand="block" color="tertiary">
+          <GoProject
+            style={{ fontSize: "25px", fontWeight: "600", marginRight: "5px" }}
+          />
+          <a>
+            <h5>Your Orders</h5>
+          </a>
+        </IonButton>
 
-      <IonCard style={{ padding: "2rem 0 2rem 0" }}>
-        <IonCardTitle color="success" style={{ textAlign: "center" }}>
+        <IonItem line="none">{showOrdersLength()}</IonItem>
+        {order.map((o, i) => {
+          return (
+            <IonCard key={i}>
+              <IonCardHeader
+                style={{ margin: "0", padding: "0" }}
+                color="success"
+              >
+                <IonGrid>
+                  <IonRow>
+                    <IonCol>
+                      <span style={{ marginRight: "5px" }}>Order Id:</span>
+                      {o._id}
+                    </IonCol>
+                    <IonCol>
+                      <IonBadge style={{ float: "right" }}>{o.status}</IonBadge>
+                    </IonCol>
+                  </IonRow>
+                </IonGrid>
+              </IonCardHeader>
+
+              {o.products.map((p, Ipro) => {
+                return (
+                  <>
+                    <IonList lines="none" key={Ipro}>
+                      <IonItem>
+                        <IonAvatar style={{ marginRight: "5px" }}>
+                          <img
+                            src={`${API}/product/photo/${p._id}`}
+                            alt={p.name}
+                          />
+                        </IonAvatar>
+                        <IonLabel>
+                          <b>{p.name}</b>
+                        </IonLabel>
+                      </IonItem>
+                    </IonList>
+                  </>
+                );
+              })}
+
+              <IonGrid>
+                <IonRow>
+                  <IonCol></IonCol>
+                  <IonCol>
+                    <IonButton
+                      style={{ float: "right" }}
+                      size="small"
+                      color="tertiary"
+                    >
+                      <a href={`/order/${o._id}`}>Order Details</a>
+                    </IonButton>
+                  </IonCol>
+                </IonRow>
+              </IonGrid>
+            </IonCard>
+          );
+        })}
+      </IonCard>
+      <IonCard style={{ padding: "2rem 0 1rem 0" }}>
+        <IonCardTitle
+          color="success"
+          style={{ textAlign: "center", marginBottom: "5px" }}
+        >
           {name}'s Profile
         </IonCardTitle>
-        <IonCardContent>
-          <IonItem lines="none" style={{ textAlign: "center" }}>
-            <img
-              src={photoUrl}
-              onError={i => (i.target.src = `${DefaultImg}`)}
-              alt={name}
-              style={{ borderRadius: "50px" }}
-            />
-          </IonItem>
-          <IonItem lines="none">
-            <IonLabel>
-              <b>Email:</b>
-              <span> {email}</span>
-            </IonLabel>
-          </IonItem>
-          <IonItem lines="none">
-            <IonLabel>
-              <b>User Id:</b>
-              <span> {_id}</span>
-            </IonLabel>
-          </IonItem>
-          <IonItem lines="none">
-            <IonLabel>
-              <b>Register Mobile:</b>
-              <span> {mobile}</span>
-            </IonLabel>
-          </IonItem>
-        </IonCardContent>
+
+        <IonItem lines="none" style={{ textAlign: "center" }}>
+          <img
+            src={photoUrl}
+            onError={i => (i.target.src = `${DefaultImg}`)}
+            alt={name}
+            style={{
+              borderRadius: "50px",
+              maxHeight: "200px",
+              maxWidth: "200px",
+              margin: "0 auto"
+            }}
+          />
+        </IonItem>
+        <IonItem lines="none">
+          <IonLabel>
+            <b>Email:</b>
+            <span> {email}</span>
+          </IonLabel>
+        </IonItem>
+        <IonItem lines="none">
+          <IonLabel>
+            <b>User Id:</b>
+            <span> {_id}</span>
+          </IonLabel>
+        </IonItem>
+        <IonItem lines="none">
+          <IonLabel>
+            <b>Register Mobile:</b>
+            <span> {mobile}</span>
+          </IonLabel>
+        </IonItem>
+
+        <IonRow>
+          <IonCol>
+            <IonButton expand="block">
+              <a>Edit Profile</a>
+            </IonButton>
+          </IonCol>
+        </IonRow>
       </IonCard>
 
       <IonCard style={{ padding: "2rem 0 2rem 0" }}>
@@ -93,7 +224,12 @@ const UserProfile = ({ history }) => {
               <IonItem lines="none">
                 <IonLabel>
                   <b>Current Balance: </b>
-                  <span> ₹{wallet_balance}</span>
+                  <span>
+                    ₹{" "}
+                    {currentWalletBalance
+                      ? `Rs. ${currentWalletBalance}`
+                      : "Rs. 0"}
+                  </span>
                 </IonLabel>
               </IonItem>
             </IonCol>
