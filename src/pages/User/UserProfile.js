@@ -71,9 +71,7 @@ const UserProfile = ({ history }) => {
   }, []);
 
   const photoUrl = _id
-    ? `${
-        process.env.REACT_APP_API_URL
-      }/user/photo/${_id}?${new Date().getTime()}`
+    ? `${process.env.REACT_APP_API_URL}/user/photo/${_id}`
     : DefaultImg;
 
   const showOrdersLength = () => {
