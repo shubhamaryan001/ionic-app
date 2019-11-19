@@ -50,9 +50,6 @@ a {
   cursor: pointer !important;
 }
 
-.single-card {
-}
-
 .share-btn {
   padding-left: 12rem;
 }
@@ -88,4 +85,21 @@ li {
   padding: 2rem;
   text-align: center;
   --background: white;
+}
+
+.celb-img {
+  overflow-y: hidden;
+  margin-bottom: 5rem;
+  animation: upanimation 15s infinite;
+  animation-timing-function: ease-in-out;
+  z-index: -1;
+}
+
+@keyframes upanimation {
+  0% {
+    transform: rotate(0deg) translateY(30vh);
+  }
+  100% {
+    transform: rotate(15deg) translateY(-100vh);
+  }
 }

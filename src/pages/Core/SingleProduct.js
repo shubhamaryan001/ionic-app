@@ -18,7 +18,8 @@ import {
   IonRow,
   IonAvatar,
   IonLabel,
-  IonItemDivider
+  IonItemDivider,
+  IonText
 } from "@ionic/react";
 import React, { useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
@@ -28,6 +29,7 @@ import ReactHtmlParser, {
   convertNodeToElement,
   htmlparser2
 } from "react-html-parser";
+
 import "./Home.css";
 import { API } from "../../config";
 import { addItem } from "./CartHelper";
@@ -101,6 +103,70 @@ const SingleProduct = props => {
     );
   };
 
+  const slideOpts = {
+    initialSlide: 0,
+    speed: 2000,
+    autoplay: {
+      delay: 2000
+    },
+    loop: true
+  };
+
+  const Videopremium = () => {
+    return (
+      <>
+        {product._id === "5dcc1f0504510f454493aa72" ? (
+          <>
+            <IonSlides pager={true} options={slideOpts}>
+              <IonSlide>
+                <IonCard
+                  color="dark"
+                  style={{
+                    margin: "5px",
+                    padding: "0"
+                  }}
+                >
+                  <iframe
+                    title="Premium House Desgin"
+                    allowFullScreen="allowFullScreen"
+                    src="https://www.youtube.com/embed/c6pkHIrIgTI?ecver=1&amp;iv_load_policy=1&amp;rel=0&amp;showinfo=0&amp;yt:stretch=16:9&amp;autoplay=1&amp;autohide=1&amp;color=red&amp;width=385&amp;width=385"
+                    width="385"
+                    height="220"
+                    allowtransparency="true"
+                    frameborder="0"
+                  ></iframe>
+                </IonCard>
+              </IonSlide>
+
+              <IonSlide>
+                <IonCard
+                  style={{
+                    margin: "5px",
+                    padding: "0"
+                  }}
+                >
+                  <img
+                    src={`${API}/product/photo/${product._id}`}
+                    alt={product.name}
+                  />
+                </IonCard>
+              </IonSlide>
+            </IonSlides>
+          </>
+        ) : (
+          <>
+            <IonCard>
+              <img
+                src={`${API}/product/photo/${product._id}`}
+                alt={product.name}
+              />
+            </IonCard>
+          </>
+        )}
+      </>
+    );
+  };
+
   return (
     <>
       <IonHeader>
@@ -109,15 +175,23 @@ const SingleProduct = props => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonCard className="single-card">
-          <img src={`${API}/product/photo/${product._id}`} alt={product.name} />
+        <IonCard>
+          {Videopremium()}
           <IonGrid>
             <IonRow>
               <IonCol style={{ margin: "0", padding: "0" }}>
-                <IonCardTitle style={{ padding: "1rem 0rem 1rem 1rem" }}>
-                  {name}
-                  {console.log(product)}
-                </IonCardTitle>
+                <IonText color="dark">
+                  <h4
+                    style={{
+                      fontSize: "20px",
+                      fontWeight: "600",
+                      padding: "0",
+                      margin: "0"
+                    }}
+                  >
+                    {name}
+                  </h4>
+                </IonText>
               </IonCol>
 
               <IonCol
@@ -194,6 +268,7 @@ const SingleProduct = props => {
               ))}
           </IonCardContent>
         </IonCard>
+
         <IonCard className="desc-card">
           <IonCardContent style={{ textAlign: "left" }}>
             {ReactHtmlParser(product.description)}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link, Redirect, withRouter } from "react-router-dom";
 import { getCart } from "./CartHelper";
 import { isAuthenticated } from "../User/UsersApi";
 import "./Home.css";
@@ -343,4 +343,4 @@ const CheckOut = ({ products }) => {
   );
 };
 
-export default CheckOut;
+export default withRouter(CheckOut);

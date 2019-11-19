@@ -23,7 +23,10 @@ import Shop from "./pages/Core/Shop";
 
 //UserS page//
 
+import Successfull from "./pages/Core/Successfull";
+
 import Signin from "./pages/User/Signin";
+import Signup from "./pages/User/Signup";
 import UserProfile from "./pages/User/UserProfile";
 import OrderDetails from "./pages/User/OrderDetails";
 import { isAuthenticated } from "./pages/User/UsersApi";
@@ -61,6 +64,7 @@ const App: React.FC = () => {
           <IonRouterOutlet>
             <Route path="/home" component={Home} exact={true} />
             <Route path="/signin" component={Signin} exact={true} />
+            <Route path="/signup" component={Signup} exact={true} />
             <Route path="/shop" component={Shop} exact={true} />
             <PrivateRoute
               path="/profile"
@@ -72,7 +76,11 @@ const App: React.FC = () => {
               component={OrderDetails}
               exact={true}
             />
-
+            <PrivateRoute
+              path="/successfull/order"
+              component={Successfull}
+              exact={true}
+            />
             <Route
               path="/product/:productId"
               exact={true}

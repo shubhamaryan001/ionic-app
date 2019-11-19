@@ -1,61 +1,75 @@
 import React, { useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
+
+import { signup } from "./UsersApi";
 import {
   IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonCard,
+  IonLoading,
   IonInput,
+  IonCard,
   IonItem,
   IonButton,
-  IonText,
-  IonCardHeader
+  IonCardHeader,
+  IonText
 } from "@ionic/react";
+import { isAuthenticated } from "./UsersApi";
 
-import { signin, isAuthenticated, authenticate } from "./UsersApi";
-
-const Signin = () => {
+const Signup = () => {
   const [values, setValues] = useState({
+    name: "",
     email: "",
+    mobile: "",
     password: "",
     error: "",
-    success: false,
-    redirectToReferrer: false
+    success: false
   });
-  const { email, password, redirectToReferrer, error } = values;
-  const { user } = isAuthenticated();
+  const { name, email, mobile, password, success, loading, error } = values;
 
   const handleChange = name => event => {
-    console.log(name);
     setValues({ ...values, error: false, [name]: event.target.value });
   };
 
   const clickSubmit = event => {
     event.preventDefault();
     setValues({ ...values, error: false, loading: true });
-    signin({ email, password }).then(data => {
+    signup({ name, email, mobile, password }).then(data => {
       if (data.error) {
         setValues({
           ...values,
           error: data.error,
+          success: false,
           loading: false
         });
       } else {
-        console.log(data);
-        authenticate(data, () => {
-          setValues({
-            ...values,
-            redirectToReferrer: true
-          });
+        setValues({
+          ...values,
+          name: "",
+          email: "",
+          mobile: "",
+          password: "",
+          error: "",
+          success: true
         });
-        window.location.reload();
       }
     });
   };
 
-  const signInForm = () => (
+  const showLoading = () =>
+    loading && (
+      <IonLoading isOpen={loading} message={"Loading..."}></IonLoading>
+    );
+
+  const signUpForm = () => (
     <form>
+      <IonItem>
+        <IonInput
+          placeholder="Name"
+          required
+          type="text"
+          onInput={handleChange("name")}
+          value={name}
+        ></IonInput>
+      </IonItem>
       <IonItem>
         <IonInput
           placeholder="Email"
@@ -63,6 +77,17 @@ const Signin = () => {
           type="email"
           onInput={handleChange("email")}
           value={email}
+        ></IonInput>
+      </IonItem>
+      <IonItem>
+        <IonInput
+          maxlength={10}
+          minlength={10}
+          placeholder="Mobile Number"
+          required
+          type="tel"
+          onInput={handleChange("mobile")}
+          value={mobile}
         ></IonInput>
       </IonItem>
       <IonItem>
@@ -75,13 +100,13 @@ const Signin = () => {
         ></IonInput>
       </IonItem>
 
-      <IonItem>
+      <IonItem line="none">
         <IonText>
           <p>
-            Don't have an account?
-            <a href="/signup">
+            Already have an account?
+            <a href="/signin">
               <IonText color="tertiary">
-                <strong> Register Now</strong>
+                <strong> Login Now</strong>
               </IonText>
             </a>
           </p>
@@ -110,39 +135,46 @@ const Signin = () => {
     </IonCard>
   );
 
+  const showSuccess = () => (
+    <IonCard
+      style={{
+        display: success ? "" : "none",
+        padding: "0",
+        textAlign: "center",
+        color: "white",
+        fontWeight: "600"
+      }}
+    >
+      <IonCardHeader color="success" style={{ padding: "5px" }}>
+        <IonText>
+          <IonText color="light">New account is created.Please</IonText>
+
+          <a href="/signin">
+            <IonText color="tertiary">
+              <b> Signin</b>
+            </IonText>
+          </a>
+        </IonText>
+      </IonCardHeader>
+    </IonCard>
+  );
+
   const redirectUser = () => {
-    if (redirectToReferrer) {
-      if (user && user.role === 1) {
-        return <Redirect to="/profile" />;
-      } else {
-        return <Redirect to="/profile" />;
-      }
-    }
     if (isAuthenticated()) {
       return <Redirect to="/" />;
     }
   };
 
-  useEffect(() => {}, []);
   return (
     <IonContent>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Signin</IonTitle>
-        </IonToolbar>
-      </IonHeader>
       <div style={{ marginTop: "25vh" }}>
-        <IonText>
-          <h3 style={{ textAlign: "center", fontWeight: "700" }}>SIGNIN</h3>
-        </IonText>
-
         {showError()}
+        {showSuccess()}
         {redirectUser()}
-
-        <IonCard>{signInForm()}</IonCard>
+        <IonCard>{signUpForm()}</IonCard>
       </div>
     </IonContent>
   );
 };
 
-export default Signin;
+export default Signup;

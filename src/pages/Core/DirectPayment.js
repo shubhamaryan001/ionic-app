@@ -1,7 +1,9 @@
 import { processPayment, createOrder } from "./ApiCore";
+import React from "react";
 import { emptyCart } from "./CartHelper";
 import { isAuthenticated } from "../User/UsersApi";
-
+import { Redirect } from "react-router";
+import { Front_API } from "../../config";
 export const razorPayOptionsDirt = (
   amount,
   user,
@@ -9,7 +11,7 @@ export const razorPayOptionsDirt = (
   anyNote,
   SecondAmount
 ) => {
-  const { name, email } = user;
+  const { name, email, mobile } = user;
   const userId = isAuthenticated() && isAuthenticated().user._id;
   const token = isAuthenticated() && isAuthenticated().token;
 
@@ -52,6 +54,7 @@ export const razorPayOptionsDirt = (
         createOrder(userId, token, createOrderData)
           .then(orderResponse => {
             emptyCart(() => {});
+            window.location = `${Front_API}/successfull/order`;
           })
 
           .catch(error => {
@@ -62,7 +65,7 @@ export const razorPayOptionsDirt = (
     prefill: {
       name: name || "name",
       email: email || "example@example.com",
-      contact: ""
+      contact: mobile || "mobile"
     },
     notes: {
       address: "Address"
