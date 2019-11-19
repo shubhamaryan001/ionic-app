@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
+import moment from "moment";
+
 import {
   IonContent,
   IonHeader,
@@ -71,6 +73,11 @@ const UserProfile = ({ history }) => {
   }, []);
 
   const photoUrl = _id ? `${API}/user/photo/${_id}` : DefaultImg;
+
+  const sort = order.sort(function(a, b) {
+    if (a.createdAt < b.createdAt) return 1;
+    if (a.createdAt > b.createdAt) return -1;
+  });
 
   const showOrdersLength = () => {
     if (order.length > 0) {
@@ -144,7 +151,9 @@ const UserProfile = ({ history }) => {
 
               <IonGrid>
                 <IonRow>
-                  <IonCol></IonCol>
+                  <IonCol>
+                    <p>{moment(o.createdAt).fromNow()}</p>
+                  </IonCol>
                   <IonCol>
                     <IonButton
                       style={{ float: "right" }}

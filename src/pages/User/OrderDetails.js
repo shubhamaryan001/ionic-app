@@ -34,6 +34,7 @@ const Razorpay = window.Razorpay;
 
 const OrderDetails = props => {
   const [showAlert1, setShowAlert1] = useState(false);
+  const [time, setTime] = useState(false);
 
   const [order, setOrder] = useState({});
   const [error, setError] = useState(false);
@@ -46,13 +47,15 @@ const OrderDetails = props => {
   const cancel = true;
   const secondpayment = true;
   const userId = isAuthenticated() && isAuthenticated().user._id;
+  const tomorrow = moment(order.createdAt).add(4, "hours");
+  const Today = moment();
 
   const loadSingleOrder = orderId => {
+    let { user, token } = isAuthenticated();
     getSingleOrder(orderId, user._id, token).then(data => {
       if (data.error) {
         setError(data.error);
       } else {
-        console.log(data);
         setOrder(data);
       }
     });
@@ -115,10 +118,45 @@ const OrderDetails = props => {
   }
 
   useEffect(() => {
-    loadSingleOrder();
     const orderId = props.match.params.orderId;
     loadSingleOrder(orderId, user._id, token);
   }, [props]);
+
+  const showButton = () => {
+    if (Today < tomorrow) {
+      return (
+        <>
+          <Button type="danger" onClick={showConfirm} shape="round" icon="stop">
+            Cancel Project
+          </Button>
+          <br />
+          <small>
+            <sup>Cancel the Project within 4hrs</sup>
+          </small>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <div>
+            <Button
+              disabled
+              type="danger"
+              onClick={showConfirm}
+              shape="round"
+              icon="stop"
+            >
+              Cancel Project
+            </Button>
+            <br />
+            <small>
+              <sup>Cancellation time is over </sup>
+            </small>
+          </div>
+        </>
+      );
+    }
+  };
 
   const redirectUser = () => {
     if (redirectToReferrer) {
@@ -378,16 +416,7 @@ const OrderDetails = props => {
             <IonCol style={{ margin: "0", padding: "0" }}>
               <div style={{ float: "right" }}>
                 {order.cancelled === false ? (
-                  <>
-                    <Button
-                      type="danger"
-                      onClick={showConfirm}
-                      shape="round"
-                      icon="stop"
-                    >
-                      Cancel Project
-                    </Button>
-                  </>
+                  <>{showButton()}</>
                 ) : (
                   <h6>
                     If Request accepted refund Will initiated within 24hrs.So
