@@ -374,13 +374,15 @@ const CheckOut = ({ products }) => {
         </IonRow>
         <IonRow>
           <IonCol>
-            <IonItem>
-              <IonTextarea
-                onInput={handleNote}
-                value={data.note}
-                placeholder="Type any Note ......"
-              ></IonTextarea>
-            </IonItem>
+            <IonCard>
+              <IonItem>
+                <IonTextarea
+                  onInput={handleNote}
+                  value={data.note}
+                  placeholder="Type any Note ......"
+                ></IonTextarea>
+              </IonItem>
+            </IonCard>
           </IonCol>
         </IonRow>
       </IonGrid>

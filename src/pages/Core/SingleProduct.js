@@ -40,6 +40,7 @@ import { WhatsappShareButton, WhatsappIcon } from "react-share";
 const SingleProduct = props => {
   let [product, setProduct] = useState({});
   const [name, setName] = useState();
+  const [disabledbtn, setDisabledbtn] = useState(false);
 
   const [error, setError] = useState(false);
   const [price, setPrice] = useState();
@@ -74,6 +75,7 @@ const SingleProduct = props => {
     let price = e.target.dataset.price;
     let area = e.target.dataset.area;
     setPrice(e.target.dataset.price);
+    setDisabledbtn(true);
     let newProduct = product;
     if (product.name.includes("variant")) {
       product.name = product.name.split("variant")[0].trim();
@@ -92,14 +94,41 @@ const SingleProduct = props => {
 
   const showAddToCartButton = () => {
     return (
-      <IonButton onClick={addToCart} href="/cart" color="success" shape="round">
-        <FaCartPlus
-          style={{
-            marginRight: "5px"
-          }}
-        />
-        Buy Now
-      </IonButton>
+      <>
+        {disabledbtn ? (
+          <IonButton
+            onClick={addToCart}
+            href="/cart"
+            color="success"
+            shape="round"
+          >
+            <FaCartPlus
+              style={{
+                marginRight: "5px"
+              }}
+            />
+            Buy Now
+          </IonButton>
+        ) : (
+          <>
+            {" "}
+            <IonButton
+              disabled
+              onClick={addToCart}
+              href="/cart"
+              color="success"
+              shape="round"
+            >
+              <FaCartPlus
+                style={{
+                  marginRight: "5px"
+                }}
+              />
+              Buy Now
+            </IonButton>
+          </>
+        )}
+      </>
     );
   };
 
