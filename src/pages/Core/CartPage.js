@@ -87,13 +87,13 @@ const CartPage = () => {
     <>
       {isAuthenticated() ? (
         <IonContent>
-          <div className="row">
+          <div>
             {items.length > 0 ? (
               <>
                 <IonCard>{showItems(items)}</IonCard>
-                <div className="col-6">
+                <div>
                   <IonCard>
-                    <h2 className="mb-4">Your cart summary</h2>
+                    <h2 style={{ textAlign: "center" }}>Your cart summary</h2>
                     <hr />
                     <Checkout products={items} setRun={setRun} run={run} />
                   </IonCard>

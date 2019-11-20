@@ -1,7 +1,7 @@
 import { processPayment } from "../Core/ApiCore";
 import { isAuthenticated } from "./UsersApi";
 export const razorPayOptionsSecond = (amount, user, handle) => {
-  const { name, email } = user;
+  const { name, email, mobile } = user;
   const userId = isAuthenticated() && isAuthenticated().user._id;
   const token = isAuthenticated() && isAuthenticated().token;
 
@@ -29,7 +29,7 @@ export const razorPayOptionsSecond = (amount, user, handle) => {
     prefill: {
       name: name || "name",
       email: email || "example@example.com",
-      contact: ""
+      contact: mobile || ""
     },
     notes: {
       address: "Address"

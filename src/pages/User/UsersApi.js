@@ -130,3 +130,34 @@ export const updateSecondPayment = (userId, token, orderId, secondpayment) => {
     })
     .catch(err => console.log(err));
 };
+
+export const addUserWallet = payload => {
+  return fetch(`${API}/wallet/add/${payload.userId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${payload.token}`
+    },
+    body: JSON.stringify(payload.wallet)
+  })
+    .then(response => {
+      return response.json();
+    })
+    .catch(err => console.log(err));
+};
+
+export const processPayment = (userId, token, paymentData) => {
+  return fetch(`${API}/payment/${userId}`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(paymentData)
+  })
+    .then(response => {
+      return response.json();
+    })
+    .catch(err => console.log(err));
+};

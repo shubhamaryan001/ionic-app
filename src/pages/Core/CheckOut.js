@@ -13,9 +13,18 @@ import {
   IonCol,
   IonInput,
   IonItem,
-  IonBadge
+  IonBadge,
+  IonText,
+  IonCardHeader
 } from "@ionic/react";
-import { FaAmazonPay, FaCreditCard } from "react-icons/fa";
+import {
+  FaAmazonPay,
+  FaCreditCard,
+  FaInfoCircle,
+  FaHandsHelping
+} from "react-icons/fa";
+import ReactTooltip from "react-tooltip";
+import { IoIosPricetags } from "react-icons/io";
 
 import { FiChevronsRight } from "react-icons/fi";
 import { razorPayOptionsDirt } from "./DirectPayment";
@@ -146,12 +155,8 @@ const CheckOut = ({ products }) => {
 
   const redirectUser = () => {
     if (redirectToReferrer) {
-      return <Redirect to="/order/successfull" />;
+      return <Redirect to="/successfull/order" />;
     }
-  };
-
-  const redirectSuccess = () => {
-    return <Redirect to="/order/successfull" />;
   };
 
   useEffect(() => {
@@ -165,19 +170,9 @@ const CheckOut = ({ products }) => {
   const walletCheckout = () => {
     return isAuthenticated() ? (
       <>
-        <FiChevronsRight />
-        <IonButton onClick={walletDeduct} size="small" color="success">
+        <IonButton onClick={walletDeduct} size="small" color="tertiary">
           Pay using Wallet Money
         </IonButton>
-        <br />
-        <span className="text-center">
-          <p>
-            Wallet balance
-            <span style={{ marginLeft: "5px" }}>
-              <b>{currentWalletBalance ? `₹${currentWalletBalance}` : "₹0"}</b>
-            </span>
-          </p>
-        </span>
       </>
     ) : (
       <Link to="/signin">
@@ -190,34 +185,41 @@ const CheckOut = ({ products }) => {
 
   const showCheckout = () => {
     return isAuthenticated() ? (
-      <>
-        <IonGrid>
-          <IonRow>
-            <IonCol>
-              <FiChevronsRight />
-              <IonButton
-                size="small"
-                color="success"
-                onClick={openRzrPay}
-                id="rzp-button1"
-              >
-                Pay Now Using Razorpay
-              </IonButton>
-            </IonCol>
-          </IonRow>
+      <IonGrid>
+        <IonRow>
+          <IonCol>
+            {currentWalletBalance >
+            (applied
+              ? getTotal() + productTax - discount
+              : getTotal() + productTax)
+              ? walletCheckout()
+              : ""}
+            <IonRow>
+              <IonCol>
+                <p>
+                  Wallet balance
+                  <span style={{ marginLeft: "5px" }}>
+                    <b>
+                      {currentWalletBalance ? `₹${currentWalletBalance}` : "₹0"}
+                    </b>
+                  </span>
+                </p>
+              </IonCol>
+            </IonRow>
+          </IonCol>
 
-          <IonRow>
-            <IonCol>
-              {currentWalletBalance >
-              (applied
-                ? getTotal() + productTax - discount
-                : getTotal() + productTax)
-                ? walletCheckout()
-                : ""}
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </>
+          <IonCol>
+            <IonButton
+              size="small"
+              color="tertiary"
+              onClick={openRzrPay}
+              id="rzp-button1"
+            >
+              Pay Now
+            </IonButton>
+          </IonCol>
+        </IonRow>
+      </IonGrid>
     ) : (
       // <button className="btn btn-raised btn-success">Pay Now</button>
       <Link to="/signin">
@@ -262,65 +264,99 @@ const CheckOut = ({ products }) => {
 
   return (
     <>
-      <IonCard style={{ padding: "5px 0 0 0" }}>
-        <IonTitle color="dark" style={{ textAlign: "center" }}>
-          Total First Payable Amount: ₹{FirstAmount}
-        </IonTitle>
-        <h6 color="dark" style={{ textAlign: "center" }}>
-          Total Second Payable Amount: ₹{SecondAmount}
-        </h6>
+      <IonCard style={{ textAlign: "center" }}>
+        <ReactTooltip />
+        <IonCardHeader style={{ margin: "0", padding: "0" }} color="tertiary">
+          <h4 style={{ color: "white", margin: "0", padding: "3px" }}>
+            Price Details <IoIosPricetags style={{ marginBottom: "-3px" }} />
+          </h4>
+        </IonCardHeader>
+
         <IonGrid>
-          <h6 style={{ textAlign: "center" }}>
-            <b>Price Summary</b>
-          </h6>
           <IonRow>
             <IonCol>
               {applied ? (
                 <>
-                  <span style={{ color: "#10DC60" }}>
-                    Discounted Product Price
-                  </span>
+                  <h5>
+                    Complete Project Price <strike>₹{amount + discount}</strike>
+                    <span style={{ marginLeft: "4px", color: "#10dc60" }}>
+                      ₹{amount}
+                    </span>
+                  </h5>
                 </>
               ) : (
                 <>
-                  <span>Total Product Price</span>
+                  <h4>Complete Project Price ₹{amount}</h4>
                 </>
-              )}
-            </IonCol>
-            <IonCol>
-              {applied ? (
-                <>
-                  <strike>₹{getTotal()}</strike>₹{getTotal() - discount}
-                </>
-              ) : (
-                <> ₹{getTotal()}</>
               )}
             </IonCol>
           </IonRow>
           <IonRow>
-            <IonCol>GST:</IonCol>
-            <IonCol>₹{productTax}</IonCol>
+            <IonCol>
+              <IonText>
+                <FiChevronsRight className="FiChevronsRight" />
+              </IonText>
+
+              <IonText color="success">
+                <b>First 25% Payment</b>
+              </IonText>
+            </IonCol>
+            <IonCol>
+              <IonText color="success">
+                <b>₹{FirstAmount}</b>
+                <FaInfoCircle
+                  style={{ margin: "-5px 0 0 5px" }}
+                  data-tip="Need to pay right now."
+                />
+              </IonText>
+            </IonCol>
           </IonRow>
+
+          <IonRow>
+            <IonCol>
+              <IonText>
+                <FaHandsHelping className="FaHandsHelping" />
+              </IonText>
+              <IonText>
+                <b>Second 75% Payment</b>
+              </IonText>
+            </IonCol>
+            <IonCol>
+              <b>₹{SecondAmount}</b>
+              <FaInfoCircle
+                style={{ margin: "-5px 0 0 5px" }}
+                data-tip="Need to pay after project is ready."
+              />
+            </IonCol>
+          </IonRow>
+
+          <IonRow>
+            <IonCol>
+              <IonText>GST:</IonText>
+            </IonCol>
+            <IonCol>
+              <IonText>₹{productTax}</IonText>
+            </IonCol>
+          </IonRow>
+
           {applied ? (
-            <IonRow>
-              <IonCol>Discount:</IonCol>
-              <IonCol>
-                <IonBadge color="success">₹{discount}</IonBadge>
-              </IonCol>
-            </IonRow>
+            <>
+              <IonRow>
+                <IonCol>
+                  <IonText>Discount Amount:</IonText>
+                </IonCol>
+                <IonCol>
+                  <IonText>
+                    <IonBadge>₹{discount}</IonBadge>{" "}
+                  </IonText>
+                </IonCol>
+              </IonRow>
+            </>
           ) : (
             ""
           )}
-
-          <IonRow>
-            <IonCol>Total Amount: </IonCol>
-            <IonCol>
-              <IonBadge color="tertiary">₹{amount}</IonBadge>
-            </IonCol>
-          </IonRow>
         </IonGrid>
       </IonCard>
-
       <IonGrid>
         <IonRow>
           <IonCol style={{ textAlign: "center" }}>
@@ -335,9 +371,8 @@ const CheckOut = ({ products }) => {
             </IonCard>
           </IonCol>
         </IonRow>
-        <IonRow>
-          <IonCol>{showCheckout()}</IonCol>
-        </IonRow>
+        {showCheckout()}
+        {redirectUser()}
       </IonGrid>
     </>
   );

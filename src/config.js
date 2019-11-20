@@ -1,4 +1,4 @@
-export const API = "https://nodelatest-api.herokuapp.com/api";
+export const API = "http://localhost:8000/api";
 export const Front_API = "https://ionic-app.now.sh";
 
 const Home_API = "http://localhost:8000/api";

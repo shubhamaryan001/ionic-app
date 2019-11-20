@@ -19,13 +19,15 @@ import {
   IonList,
   IonCardHeader,
   IonBadge,
-  IonAvatar
+  IonAvatar,
+  IonText
 } from "@ionic/react";
+import { razorPayOptions } from "./AddWalletPayment";
 import { getUserBalance } from "../Core/ApiCore";
 import { isAuthenticated, signout, getOrdersHistory } from "./UsersApi";
 import { GoProject } from "react-icons/go";
 import { API } from "../../config";
-
+import "./User.css";
 import DefaultImg from "../../image/dummy-user-img-1.png";
 
 const isActive = (history, path) => {
@@ -36,8 +38,25 @@ const isActive = (history, path) => {
   }
 };
 
+const Razorpay = window.Razorpay;
+
 const UserProfile = ({ history }) => {
+  let {
+    user: { _id, name, email, mobile, wallet_balance },
+    token
+  } = isAuthenticated();
   const [order, setOrder] = useState([]);
+  const [balc, setBalc] = useState({
+    currentWalletBalance: wallet_balance
+  });
+
+  const { currentWalletBalance } = balc;
+
+  const [values, setValues] = useState({
+    amount: ""
+  });
+
+  const { amount } = values;
 
   const initOrder = (userId, token) => {
     getOrdersHistory(userId, token).then(data => {
@@ -49,16 +68,30 @@ const UserProfile = ({ history }) => {
     });
   };
 
-  let {
-    user: { _id, name, email, mobile, wallet_balance },
-    token
-  } = isAuthenticated();
+  // Razorpay
+  const rzp1 = new Razorpay(
+    razorPayOptions(
+      amount,
+      {
+        name: name ? name : "",
+        email: email ? email : "",
+        mobile: mobile ? mobile : "",
+        _id,
+        token
+      },
+      true
+    )
+  );
 
-  const [balc, setBalc] = useState({
-    currentWalletBalance: wallet_balance
-  });
+  const openRzrPay = event => {
+    rzp1.open();
+    event.preventDefault();
+    getBalance();
+  };
 
-  const { currentWalletBalance } = balc;
+  const handleChange = name => event => {
+    setValues({ ...values, ["amount"]: event.target.value });
+  };
 
   const getBalance = async event => {
     const currentBalance = await getUserBalance({ userId: _id });
@@ -169,13 +202,17 @@ const UserProfile = ({ history }) => {
           );
         })}
       </IonCard>
-      <IonCard style={{ padding: "2rem 0 1rem 0" }}>
-        <IonCardTitle
+      <IonCard style={{}}>
+        <IonCardHeader
           color="success"
-          style={{ textAlign: "center", marginBottom: "5px" }}
+          style={{ padding: "5px", marginBottom: "5px" }}
         >
-          {name}'s Profile
-        </IonCardTitle>
+          <IonText>
+            <h4 style={{ textAlign: "center", color: "white" }}>
+              {name}'s Profile
+            </h4>
+          </IonText>
+        </IonCardHeader>
 
         <IonItem lines="none" style={{ textAlign: "center" }}>
           <img
@@ -218,11 +255,15 @@ const UserProfile = ({ history }) => {
         </IonRow>
       </IonCard>
 
-      <IonCard style={{ padding: "2rem 0 2rem 0" }}>
-        <IonTitle color="success" style={{ textAlign: "center" }}>
-          Wallet Info
-        </IonTitle>
-
+      <IonCard>
+        <IonCardHeader
+          color="success"
+          style={{ padding: "5px", marginBottom: "5px" }}
+        >
+          <IonText>
+            <h4 style={{ textAlign: "center", color: "white" }}>Wallet Info</h4>
+          </IonText>
+        </IonCardHeader>
         <IonGrid>
           <IonRow>
             <IonCol>
@@ -230,24 +271,32 @@ const UserProfile = ({ history }) => {
                 <IonLabel>
                   <b>Current Balance: </b>
                   <span>
-                    ₹{" "}
-                    {currentWalletBalance
-                      ? `Rs. ${currentWalletBalance}`
-                      : "Rs. 0"}
+                    {currentWalletBalance ? `₹ ${currentWalletBalance}` : "₹ 0"}
                   </span>
                 </IonLabel>
               </IonItem>
-            </IonCol>
-            <IonCol style={{ textAlign: "center" }}>
-              <form>
-                <IonItem>
-                  <IonInput
-                    type="number"
-                    placeholder="Add To wallet"
-                  ></IonInput>
-                </IonItem>
-                <IonButton size="small">Add Money</IonButton>
-              </form>
+              <IonRow>
+                <IonCol>
+                  <IonCard>
+                    <IonItem lines="none">
+                      <IonInput
+                        onInput={handleChange("amount")}
+                        type="number"
+                        placeholder="Add To wallet"
+                        value={amount}
+                      ></IonInput>
+
+                      <IonButton
+                        onClick={openRzrPay}
+                        id="rzp-button1"
+                        size="small"
+                      >
+                        Add Money
+                      </IonButton>
+                    </IonItem>
+                  </IonCard>
+                </IonCol>
+              </IonRow>
             </IonCol>
           </IonRow>
         </IonGrid>

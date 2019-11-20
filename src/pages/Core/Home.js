@@ -50,7 +50,8 @@ const Home = () => {
     speed: 800,
     autoplay: {
       delay: 2000
-    }
+    },
+    loop: true
   };
 
   useEffect(() => {
