@@ -35,7 +35,7 @@ export const razorPayOptionsSecond = (amount, user, handle) => {
       address: "Address"
     },
     theme: {
-      color: "#F37254"
+      color: "#ffce00"
     }
   };
 };

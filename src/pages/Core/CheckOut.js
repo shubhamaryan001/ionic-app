@@ -15,7 +15,8 @@ import {
   IonItem,
   IonBadge,
   IonText,
-  IonCardHeader
+  IonCardHeader,
+  IonTextarea
 } from "@ionic/react";
 import {
   FaAmazonPay,
@@ -371,9 +372,20 @@ const CheckOut = ({ products }) => {
             </IonCard>
           </IonCol>
         </IonRow>
-        {showCheckout()}
-        {redirectUser()}
+        <IonRow>
+          <IonCol>
+            <IonItem>
+              <IonTextarea
+                onInput={handleNote}
+                value={data.note}
+                placeholder="Type any Note ......"
+              ></IonTextarea>
+            </IonItem>
+          </IonCol>
+        </IonRow>
       </IonGrid>
+      {showCheckout()}
+      {redirectUser()}
     </>
   );
 };

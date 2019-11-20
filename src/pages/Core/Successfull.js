@@ -20,7 +20,8 @@ const Successfull = () => {
       <IonCard
         style={{
           marginTop: "50%",
-          zIndex: "99"
+          zIndex: "99",
+          backgroundColor: "white"
         }}
       >
         <IonCardHeader
@@ -29,7 +30,7 @@ const Successfull = () => {
         >
           Thank you for Purchasing Our Services
         </IonCardHeader>
-        <Zoom duration={1500} delay={1500} loop>
+        <Zoom duration={1500} delay={1500} infinte>
           <FaRegCheckCircle
             style={{
               padding: "5px",

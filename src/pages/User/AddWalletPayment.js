@@ -54,7 +54,7 @@ export const razorPayOptions = (amount, user, isWallet) => {
       address: "Address"
     },
     theme: {
-      color: "#F37254"
+      color: "#ffce00"
     }
   };
 };
